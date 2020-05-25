@@ -11,3 +11,4 @@ Se possível, execute no docker com o comando
 
 Crie o banco que será utilizado e faça o mapeamento correto no application.properties
 
+Após executar o projeto, terá acesso ao Swagger acessando o link http://localhost:8080/swagger-ui.html#/
