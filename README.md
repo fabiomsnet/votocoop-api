@@ -1,7 +1,7 @@
 # VotoCoop-API
 Provedor de APIs para sessões de votação
 
-###Caso queira executar este projeto, siga essas orientações:
+### Caso queira executar este projeto, siga essas orientações:
 
 Para esta implementação foi utlizado o Postgresql versão 42.2.12.
 
