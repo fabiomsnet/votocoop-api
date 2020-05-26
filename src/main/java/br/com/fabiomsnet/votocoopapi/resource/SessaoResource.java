@@ -40,7 +40,7 @@ public class SessaoResource {
 
     @PostMapping("/voto")
     @ApiOperation(value = "Grava o voto de um cooperado em uma sessão ativa.")
-    public VotoDTO votoCooperado(@RequestBody VotoDTO voto){
+    public VotoDTO votoCooperado(@RequestBody VotoDTO voto) throws Exception {
         return sessaoService.criarVotoCooperado(voto);
     }
 

@@ -14,30 +14,30 @@ public class VotoSessaoID implements Serializable {
     private long idSessao;
 
     @Column(name = "cliente_id")
-    private long idCliente;
+    private String idCliente;
 
     public VotoSessaoID() {
     }
 
-    public VotoSessaoID(long idSessao, long idCliente) {
+    public VotoSessaoID(long idSessao, String idCliente) {
         this.idSessao = idSessao;
         this.idCliente = idCliente;
     }
 
-    public long getId() {
+    public long getIdSessao() {
         return idSessao;
     }
 
-    public void setId(long idSessao) {
+    public void setIdSessao(long idSessao) {
         this.idSessao = idSessao;
     }
 
-    public long getIdCliente() {
+    public String getIdCliente() {
         return idCliente;
     }
 
-    public void setIdCliente(long idSessao) {
-        this.idCliente = idSessao;
+    public void setIdCliente(String idCliente) {
+        this.idCliente = idCliente;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class VotoSessaoID implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         VotoSessaoID that = (VotoSessaoID) o;
         return idSessao == that.idSessao &&
-                idCliente == that.idCliente;
+                idCliente.equals(that.idCliente);
     }
 
     @Override

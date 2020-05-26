@@ -8,7 +8,7 @@ public class VotoDTO implements Serializable {
 
     private long idSessao;
 
-    private long idCliente;
+    private String idCliente;
 
     private Boolean voto_cliente;
 
@@ -20,11 +20,11 @@ public class VotoDTO implements Serializable {
         this.idSessao = idSessao;
     }
 
-    public long getIdCliente() {
+    public String getIdCliente() {
         return idCliente;
     }
 
-    public void setIdCliente(long idCliente) {
+    public void setIdCliente(String idCliente) {
         this.idCliente = idCliente;
     }
 

@@ -1,4 +1,4 @@
-package br.com.fabiomsnet.votocoopapi.model;
+package br.com.fabiomsnet.votocoopapi.model.enums;
 
 import java.io.Serializable;
 
