@@ -33,7 +33,7 @@ public class SessaoResource {
     }
 
     @PostMapping
-    @ApiOperation(value = "Cria uma nova sessão.")
+    @ApiOperation(value = "Cria uma nova sessão com uma duração em minutos.")
     public Sessao criarSessao(@RequestBody SessaoDTO sessaoDTO){
         return sessaoService.criarSessao(sessaoDTO);
     }
