@@ -1,10 +1,8 @@
 package br.com.fabiomsnet.votocoopapi.service;
 
+import br.com.fabiomsnet.votocoopapi.dto.SessaoDTO;
 import br.com.fabiomsnet.votocoopapi.dto.VotoDTO;
-import br.com.fabiomsnet.votocoopapi.model.Sessao;
-import br.com.fabiomsnet.votocoopapi.model.Voto;
-import br.com.fabiomsnet.votocoopapi.model.VotoEnum;
-import br.com.fabiomsnet.votocoopapi.model.VotoSessaoID;
+import br.com.fabiomsnet.votocoopapi.model.*;
 import br.com.fabiomsnet.votocoopapi.repository.SessaoRepository;
 import br.com.fabiomsnet.votocoopapi.repository.VotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +31,14 @@ public class SessaoService {
         return sessaoRepository.findAll();
     }
 
-    public Sessao criarSessao(Sessao sessao){
+    public Sessao criarSessao(SessaoDTO sessaoDTO){
+
+        Sessao sessao = new Sessao();
+        sessao.setPauta(pautaService.buscarPautaPorId(sessaoDTO.getIdPauta()));
         sessao.setDataCriacao(new Date());
+        sessao.setDuracao(sessaoDTO.getDuracao());
         sessao.setStatus(true);
+
         Sessao sessaoSalva = sessaoRepository.save(sessao);
         sessaoRepository.flush();
         agendarFechamentoSessao(sessaoSalva);

@@ -19,7 +19,7 @@ public class PautaResource {
     PautaService pautaService;
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "Retorna a pauta correspondente ao ID informado.")
+    @ApiOperation(value = "Retorna a pauta correspondente ao ID informado na URL.")
     public Pauta pautaPorId(@PathVariable(value = "id") Long idPauta){
         return pautaService.buscarPautaPorId(idPauta);
     }
@@ -31,7 +31,7 @@ public class PautaResource {
     }
 
     @PostMapping
-    @ApiOperation(value = "Cria uma nova pauta")
+    @ApiOperation(value = "Cria uma nova pauta a partir do nome informado no body da requisição.")
     public Pauta criarPauta(@RequestBody Pauta pauta){
         return pautaService.criarPauta(pauta);
     }

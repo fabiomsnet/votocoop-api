@@ -1,5 +1,7 @@
 package br.com.fabiomsnet.votocoopapi.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
@@ -15,7 +17,8 @@ public class Voto {
     @JoinColumn(name = "sessao_id", insertable = false, updatable = false)
     private Sessao sessao;
 
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date data_voto;
 
     private Boolean voto_cliente;

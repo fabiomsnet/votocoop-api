@@ -1,5 +1,7 @@
 package br.com.fabiomsnet.votocoopapi.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -18,10 +20,17 @@ public class Pauta implements Serializable {
 
     private String nome;
 
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     private Date dataCriacao;
 
     private ResultadoVotacao resultadoVotacao;
+
+    public Pauta() {
+    }
+
+    public Pauta(long id) {
+        this.id = id;
+    }
 
     public long getId() {
         return id;
