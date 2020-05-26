@@ -1,6 +1,6 @@
 package br.com.fabiomsnet.votocoopapi.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,7 +22,7 @@ public class Sessao implements Serializable {
     @JoinColumn(name = "pauta_id", unique = true, nullable = false, updatable = false)
     private Pauta pauta;
 
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private Date dataCriacao;
 
     private Boolean status;

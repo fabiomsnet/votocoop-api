@@ -1,6 +1,6 @@
 package br.com.fabiomsnet.votocoopapi.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,12 +13,7 @@ public class Voto {
     @EmbeddedId
     private VotoSessaoID votoSessaoID;
 
-    @ManyToOne
-    @JoinColumn(name = "sessao_id", insertable = false, updatable = false)
-    private Sessao sessao;
-
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
-    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private Date data_voto;
 
     private Boolean voto_cliente;
@@ -29,14 +24,6 @@ public class Voto {
 
     public void setVotoSessaoID(VotoSessaoID votoSessaoID) {
         this.votoSessaoID = votoSessaoID;
-    }
-
-    public Sessao getSessao() {
-        return sessao;
-    }
-
-    public void setSessao(Sessao sessao) {
-        this.sessao = sessao;
     }
 
     public Date getData_voto() {

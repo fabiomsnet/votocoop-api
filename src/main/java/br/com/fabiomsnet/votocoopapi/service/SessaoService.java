@@ -3,6 +3,7 @@ package br.com.fabiomsnet.votocoopapi.service;
 import br.com.fabiomsnet.votocoopapi.dto.SessaoDTO;
 import br.com.fabiomsnet.votocoopapi.dto.VotoDTO;
 import br.com.fabiomsnet.votocoopapi.model.*;
+import br.com.fabiomsnet.votocoopapi.model.enums.VotoEnum;
 import br.com.fabiomsnet.votocoopapi.repository.SessaoRepository;
 import br.com.fabiomsnet.votocoopapi.repository.VotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,20 +46,6 @@ public class SessaoService {
         return sessaoSalva;
     }
 
-    public VotoDTO criarVotoCooperado(VotoDTO voto){
-        Sessao sessao = sessaoRepository.findById(voto.getIdSessao()).orElse(null);
-        VotoDTO votoSalvo = null;
-        if (sessao != null && sessao.getStatus()) {
-            Voto votoCooperado = new Voto();
-            votoCooperado.setVotoSessaoID(new VotoSessaoID(voto.getIdSessao(), voto.getIdCliente()));
-            votoCooperado.setVoto_cliente(voto.getVoto_cliente());
-            votoCooperado.setData_voto(new Date());
-            votoRepository.save(votoCooperado);
-            votoSalvo = voto;
-        }
-        return votoSalvo;
-    }
-
     private void agendarFechamentoSessao(Sessao sessao){
         Timer cronometro = new Timer();
         TimerTask tarefa = new TimerTask() {
@@ -80,7 +67,19 @@ public class SessaoService {
         Long votosContra = votoRepository.countByVotoIdSessao(sessao.getId(), VotoEnum.CONTRA.getVoto());
 
         pautaService.gravarResultadoVotacao(sessao.getPauta().getId(), votosContra, votosAfavor);
+    }
 
+    public VotoDTO criarVotoCooperado(VotoDTO voto) throws Exception {
+        Sessao sessao = sessaoRepository.findById(voto.getIdSessao()).orElse(null);
+        VotoDTO votoSalvo = null;
+        if (sessao != null && sessao.getStatus()) {
+            Long.parseLong(voto.getIdCliente());
+            votoRepository.persistVoto(voto.getIdSessao(), voto.getIdCliente(), new Date(), voto.getVoto_cliente());
+            votoSalvo = voto;
+        } else {
+            throw new Exception();
+        }
+        return votoSalvo;
     }
 
 }
