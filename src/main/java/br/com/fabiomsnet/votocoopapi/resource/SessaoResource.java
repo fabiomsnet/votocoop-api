@@ -6,6 +6,7 @@ import br.com.fabiomsnet.votocoopapi.model.Sessao;
 import br.com.fabiomsnet.votocoopapi.service.SessaoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,7 @@ public class SessaoResource {
 
     @PostMapping("/voto")
     @ApiOperation(value = "Grava o voto de um cooperado em uma sessão ativa.")
-    public VotoDTO votoCooperado(@RequestBody VotoDTO voto) throws Exception {
+    public VotoDTO votoCooperado(@RequestBody VotoDTO voto) throws NotFoundException {
         return sessaoService.criarVotoCooperado(voto);
     }
 

@@ -13,6 +13,6 @@ public class GlobalJavaExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleDiffControllerExceptions() {
-        return new ResponseEntity(null, HttpStatus.PRECONDITION_FAILED);
+        return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
     }
 }
