@@ -8,6 +8,8 @@ import br.com.fabiomsnet.votocoopapi.model.enums.VotoEnum;
 import br.com.fabiomsnet.votocoopapi.repository.SessaoRepository;
 import br.com.fabiomsnet.votocoopapi.repository.VotoRepository;
 import br.com.fabiomsnet.votocoopapi.rest.BuscaStatusCooperado;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -75,12 +77,18 @@ public class SessaoService {
     }
 
     private void contabilizaVotosAposSessao(Sessao sessao) {
+        ObjectMapper mapper = new ObjectMapper();
+
         Long votosAFavor = votoRepository.countByVotoIdSessao(sessao.getId(), VotoEnum.AFAVOR.getVoto());
         Long votosContra = votoRepository.countByVotoIdSessao(sessao.getId(), VotoEnum.CONTRA.getVoto());
 
         Pauta pauta = pautaService.gravarResultadoVotacao(sessao.getPauta().getId(), votosContra, votosAFavor);
 
-        sendMessage(pauta.toString());
+        try {
+            sendMessage(mapper.writeValueAsString(pauta));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     public VotoDTO criarVotoCooperado(VotoDTO voto) throws NotFoundException {
