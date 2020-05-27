@@ -1,4 +1,4 @@
-package br.com.fabiomsnet.votocoopapi.service;
+package br.com.fabiomsnet.votocoopapi.config;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import org.springframework.context.annotation.Bean;

@@ -1,12 +1,16 @@
 package br.com.fabiomsnet.votocoopapi.service;
 
 import br.com.fabiomsnet.votocoopapi.dto.SessaoDTO;
+import br.com.fabiomsnet.votocoopapi.dto.StatusCooperadoDTO;
 import br.com.fabiomsnet.votocoopapi.dto.VotoDTO;
 import br.com.fabiomsnet.votocoopapi.model.*;
 import br.com.fabiomsnet.votocoopapi.model.enums.VotoEnum;
 import br.com.fabiomsnet.votocoopapi.repository.SessaoRepository;
 import br.com.fabiomsnet.votocoopapi.repository.VotoRepository;
+import br.com.fabiomsnet.votocoopapi.rest.BuscaStatusCooperado;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,6 +27,14 @@ public class SessaoService {
 
     @Autowired
     PautaService pautaService;
+
+    @Autowired
+    BuscaStatusCooperado buscaStatusCooperado;
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    public static final String TOPICO_KAFKA="votocoop";
 
     public Sessao buscarSessaoPorId(Long idSessao){
         return sessaoRepository.findById(idSessao).orElse(null);
@@ -63,23 +75,36 @@ public class SessaoService {
     }
 
     private void contabilizaVotosAposSessao(Sessao sessao) {
-        Long votosAfavor = votoRepository.countByVotoIdSessao(sessao.getId(), VotoEnum.AFAVOR.getVoto());
+        Long votosAFavor = votoRepository.countByVotoIdSessao(sessao.getId(), VotoEnum.AFAVOR.getVoto());
         Long votosContra = votoRepository.countByVotoIdSessao(sessao.getId(), VotoEnum.CONTRA.getVoto());
 
-        pautaService.gravarResultadoVotacao(sessao.getPauta().getId(), votosContra, votosAfavor);
+        Pauta pauta = pautaService.gravarResultadoVotacao(sessao.getPauta().getId(), votosContra, votosAFavor);
+
+        sendMessage(pauta.toString());
     }
 
-    public VotoDTO criarVotoCooperado(VotoDTO voto) throws Exception {
+    public VotoDTO criarVotoCooperado(VotoDTO voto) throws NotFoundException {
+
+        validarCooperadoSessao(voto);
+
+        votoRepository.persistVoto(voto.getIdSessao(), voto.getIdCliente(), new Date(), voto.getVoto_cliente());
+
+        return voto;
+    }
+
+    private void validarCooperadoSessao(VotoDTO voto) throws NotFoundException {
         Sessao sessao = sessaoRepository.findById(voto.getIdSessao()).orElse(null);
-        VotoDTO votoSalvo = null;
-        if (sessao != null && sessao.getStatus()) {
+        StatusCooperadoDTO statusCooperadoDTO = buscaStatusCooperado.buscaStatusCooperado(voto.getIdCliente());
+        if (sessao != null && sessao.getStatus() && statusCooperadoDTO != null
+                && StatusCooperadoDTO.COOPERADO_LIBERADO.equals(statusCooperadoDTO.getStatus())) {
             Long.parseLong(voto.getIdCliente());
-            votoRepository.persistVoto(voto.getIdSessao(), voto.getIdCliente(), new Date(), voto.getVoto_cliente());
-            votoSalvo = voto;
         } else {
-            throw new Exception();
+            throw new NotFoundException("");
         }
-        return votoSalvo;
+    }
+
+    public void sendMessage(String msg) {
+        kafkaTemplate.send(TOPICO_KAFKA, msg);
     }
 
 }

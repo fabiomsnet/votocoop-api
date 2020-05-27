@@ -33,4 +33,12 @@ public class ResultadoVotacao implements Serializable {
     public void setVotosAFavor(Long votosAFavor) {
         this.votosAFavor = votosAFavor;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "votosContra=" + votosContra +
+                ", votosAFavor=" + votosAFavor +
+                '}';
+    }
 }
