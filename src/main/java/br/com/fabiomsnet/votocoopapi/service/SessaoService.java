@@ -10,6 +10,7 @@ import br.com.fabiomsnet.votocoopapi.repository.VotoRepository;
 import br.com.fabiomsnet.votocoopapi.rest.BuscaStatusCooperado;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -29,6 +30,11 @@ public class SessaoService {
 
     @Autowired
     BuscaStatusCooperado buscaStatusCooperado;
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    public static final String TOPICO_KAFKA="votocoop";
 
     public Sessao buscarSessaoPorId(Long idSessao){
         return sessaoRepository.findById(idSessao).orElse(null);
@@ -69,12 +75,12 @@ public class SessaoService {
     }
 
     private void contabilizaVotosAposSessao(Sessao sessao) {
-        Long votosAfavor = votoRepository.countByVotoIdSessao(sessao.getId(), VotoEnum.AFAVOR.getVoto());
+        Long votosAFavor = votoRepository.countByVotoIdSessao(sessao.getId(), VotoEnum.AFAVOR.getVoto());
         Long votosContra = votoRepository.countByVotoIdSessao(sessao.getId(), VotoEnum.CONTRA.getVoto());
 
-        pautaService.gravarResultadoVotacao(sessao.getPauta().getId(), votosContra, votosAfavor);
+        Pauta pauta = pautaService.gravarResultadoVotacao(sessao.getPauta().getId(), votosContra, votosAFavor);
 
-
+        sendMessage(pauta.toString());
     }
 
     public VotoDTO criarVotoCooperado(VotoDTO voto) throws NotFoundException {
@@ -95,6 +101,10 @@ public class SessaoService {
         } else {
             throw new NotFoundException("");
         }
+    }
+
+    public void sendMessage(String msg) {
+        kafkaTemplate.send(TOPICO_KAFKA, msg);
     }
 
 }

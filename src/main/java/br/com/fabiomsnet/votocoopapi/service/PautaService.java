@@ -28,12 +28,13 @@ public class PautaService {
         return repository.save(pauta);
     }
 
-    public void gravarResultadoVotacao(Long idPauta, Long votosContra, Long votosAFavor){
+    public Pauta gravarResultadoVotacao(Long idPauta, Long votosContra, Long votosAFavor){
         Pauta pauta = repository.findById(idPauta).orElse(null);
         if(pauta != null) {
             pauta.setResultadoVotacao(new ResultadoVotacao(votosContra, votosAFavor));
             repository.save(pauta);
         }
+        return pauta;
     }
 
 }
